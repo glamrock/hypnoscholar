@@ -1,12 +1,14 @@
-#!/usr/bin/env ruby
+#!/home/somnidea/.rvm/bin/gempath_ruby
 
 require 'twitter'
 require 'bitly'
 require 'words'
 
-require './gscholar'
+$dir = File.dirname(__FILE__)
 
-PREVWORDS_FILE = "prevwords.dat"
+require "#{$dir}/gscholar"
+
+PREVWORDS_FILE = "#{$dir}/prevwords.dat"
 
 if __FILE__ == $0
 	Dict = Words::Wordnet.new
