@@ -108,7 +108,7 @@ class Hypnoscholar
 			processed: false
 		}
 
-		tweet = Tweet.find_by_original_id(mash.original_id)
+		tweet = Tweet.find_by_original_id(mash.id)
 
 		if tweet
 			tweet.update_properties(props)
