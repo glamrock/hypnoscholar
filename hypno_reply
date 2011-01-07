@@ -1,0 +1,11 @@
+#!/home/somnidea/.rvm/bin/gempath_ruby
+
+$dir = File.dirname(__FILE__)
+require "#{$dir}/hypnoscholar"
+
+
+if __FILE__ == $0
+	hypno = Hypnoscholar.new
+	hypno.retrieve_mentions
+	hypno.process_mentions
+end

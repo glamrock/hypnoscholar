@@ -17,6 +17,7 @@ end
 
 class Scholar
 	class << self
+		# Returns a hash containing :text and :url of each result on first page.
 		def search(query, opthash=nil)
 			opts = {
 				:citations => false,
