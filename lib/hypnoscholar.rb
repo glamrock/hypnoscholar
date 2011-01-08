@@ -46,7 +46,7 @@ class Logger
 	end
 
 	def log(category, str)
-		@fdhash[category] ||= File.open("#{@logdir}/#{sym}.log", 'a')
+		@fdhash[category] ||= File.open("#{@logdir}/#{category}.log", 'a')
 		@fdhash[category].write(str+"\n")
 		@fdhash[category].flush
 	end
@@ -85,22 +85,57 @@ class Hypnoscholar
 		@bitly = Bitly.new('somnidea', 'R_3e01b5af02f7232d7ea171aa9df6fdac')
 	end
 
+	# Determine if a string of text is sciency or not. Currently not very sophisticated.
+	def is_sciency?(text)
+		text.downcase.include?('scien')
+	end
+
+	# What was our last tweet?
+	def last_tweet
+		Tweet.where({:user_screen_name => 'hypnoscholar'}, :order => "posted_at ASC").last
+	end
+
+	# What was our last non-reply tweet?
+	def last_update
+		Tweet.where({:user_screen_name => 'hypnoscholar', :in_reply_to_screen_name => nil}, :order => "posted_at ASC").last
+	end
+
+	# When did we last post a non-reply tweet?
+	def time_of_last_update
+		last_tweet ? last_tweet.posted_at : (Time.new - Time.new.to_f)
+	end
+
+	# Can we post another non-reply tweet now?
+	def can_update_again_yet?
+		(Time.now - time_of_last_tweet) > 60*60
+	end
+
 	def construct_response(content, sender_name)
-		if content[0] == "$" # Shell command!
+		if content[0] == "$"
+			# Shell Command
 			if sender_name != $creator
 				return "@#{sender_name} is not in the hypnoers file. This incident has been reported."
 			else
 				return `#{content[2..-1]}`
 			end
+
 		elsif match = content.match(/http:\/\/[^ ]+/)
-			doc = Nokogiri(open(match[0]).read)
+			# Interesting link?
+			link = match[0]
+			doc = Nokogiri(open(link).read)
+
+			title = doc.css('title').text
+
+			if is_sciency?(title) && can_update_again_yet?
+				update make_link_tweet(title, link, sender_name)
+				return false # Processed successfully, no need for reply.
+			end
 		else
 			return nil # Not sure what to do.
 		end
 	end
 
 
-	# Construct a response to a given query
 	def assemble_response(query)
 		if query.is_a? Tweet
 			sender_name = query.user_screen_name
@@ -113,13 +148,16 @@ class Hypnoscholar
 		begin
 			resp = construct_response(content, sender_name)
 		rescue Exception => e
-			@log.error "Error responding to query `#{query}`: #{e.message}"
-			resp = "Sorry, I encountered an error while trying to construct a reply! :("
+			@log.error "Error responding to query `#{content}`: #{e.message}"
+			#resp = "Sorry, I encountered an error while thinking about how to reply! :("
+			resp = nil
 		end
 
-		resp = resp.strip
-		resp = "@#{sender_name} " + resp unless query.is_a? Message || resp.match(/^@#{sender_name}/)
-		resp = resp[0..136] + "..." if resp.strip.length > 140
+		if resp
+			resp = resp.strip
+			resp = "@#{sender_name} " + resp unless query.is_a? Message || resp.match(/^@#{sender_name}/)
+			resp = truncate(resp, 140)
+		end
 
 		return resp
 	end
@@ -184,40 +222,86 @@ class Hypnoscholar
 		Twitter.mentions(params).each {|mash| save_tweet(mash)}
 	end
 
+	# Retrieve and save local copies of our own tweets for reference.
+	def retrieve_own_timeline
+		params = last_tweet.nil? ? {} : {:since_id => last_tweet.posted_at}
+		Twitter.user_timeline('hypnoscholar', params).each {|mash| save_tweet(mash)}
+	end
+
 	# Reply to a direct message with the given content.
 	def send_reply_to_message(message, response)
-		target = message.sender_screen_name
-		@twitter.direct_message_create(target, response) unless $dryrun
-		@log.message "To @#{target}: #{response}"
-		message.processed = true
-		message.save
+		unless response == false
+			target = message.sender_screen_name
+			@twitter.direct_message_create(target, response) unless $dryrun
+			@log.message "To @#{target}: #{response}"
+		end
+
+		unless $dryrun
+			message.processed = true
+			message.save
+		end
 	end
 
 	# Reply to a tweet with the given content.
 	def send_reply_to_tweet(tweet, response)
-		@twitter.update(response, :in_reply_to_status_id => tweet.original_id) unless $dryrun
-		@log.tweet response
-		tweet.processed = true
-		tweet.save
+		unless response == false
+			@twitter.update(response, :in_reply_to_status_id => tweet.original_id) unless $dryrun
+			@log.tweet response
+		end
+
+		unless $dryrun
+			tweet.processed = true
+			tweet.save
+		end
 	end
 
 	# Update with given content.
 	def update(content)
 		@log.tweet content
-		@twitter.update(content) unless $dryrun
+		unless $dryrun
+			@twitter.update(content)
+			retrieve_own_timeline	
+		end
+	end
+
+	# Truncate a given string to fit within the character limit, adding '...' as required.
+	def truncate(str, charlimit)
+		if str.length <= charlimit
+			str
+		else
+			str[0..(charlimit-3-1)] + '...'
+		end
+	end
+
+	# Generate tweet with a short title and a bitly link.
+	def make_link_tweet(title, longlink, via=nil)
+		link = @bitly.shorten(longlink).short_url
+		viastr = " (via @#{via})"
+
+		title_constraint = 140-link.length-1
+		title_constraint -= viastr.length unless via.nil?
+		return "#{truncate(title, title_constraint)} #{link}" + (via.nil? ? '' : viastr)
+	end
+
+	def unprocessed_messages
+		Message.where(:recipient_screen_name => 'hypnoscholar', :processed => false)
 	end
 
 	# Go through mentions we haven't responded to yet and see if we can say something.
 	def process_messages
-		Message.where(:processed => false).each do |message|
+		unprocessed_messages.each do |message|
 			response = assemble_response(message)
 			send_reply_to_message(message, response) unless response.nil?
 		end
 	end
 
+	def unprocessed_mentions
+		Tweet.where(:in_reply_to_screen_name => 'hypnoscholar', :processed => false)
+	end
+
 	# Go through mentions we haven't responded to yet and see if we can say something.
 	def process_mentions
-		Tweet.where(:processed => false).each do |tweet|
+		unprocessed_mentions.each do |tweet|
 			response = assemble_response(tweet)
 			send_reply_to_tweet(tweet, response) unless response.nil?
 		end
@@ -253,13 +337,8 @@ class Hypnoscholar
 
 			next if result.nil?
 
-			link = @bitly.shorten(result[:url]).short_url
+			update make_link_tweet(result[:text], result[:url])
 
-			char_alloc = 140-link.length-1
-
-			tweet = "#{result[:text][0..char_alloc]} #{link}"
-
-			update(tweet)
 
 			prevwords << word
 
