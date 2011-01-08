@@ -83,14 +83,22 @@ class Hypnoscholar
 	# Save a copy of this direct message to the database.
 	# Assumes it is unprocessed.
 	def save_message(mash)
-		message = Message.new({
+		props = {
 			original_id: mash.id,
 			text: mash.text,
 			sender_screen_name: mash.sender_screen_name,
 			recipient_screen_name: mash.recipient_screen_name,
 			posted_at: mash.created_at,
 			processed: false
-		})
+		}
+
+		message = Message.find_by_original_id(mash.id)
+
+		if message
+			message.update_attributes(props)
+		else
+			message = Message.new(props)
+		end
 
 		message.save
 	end
@@ -112,7 +120,7 @@ class Hypnoscholar
 		tweet = Tweet.find_by_original_id(mash.id)
 
 		if tweet
-			tweet.update_properties(props)
+			tweet.update_attributes(props)
 		else
 			tweet = Tweet.new(props)
 		end
