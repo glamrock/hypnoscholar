@@ -139,7 +139,7 @@ class Hypnoscholar
 	end
 
 	def can_update_again_yet?
-		(Time.now - time_of_last_tweet) > 60*60
+		(Time.now - time_of_last_update) > 60*60
 	end
 
 	def unprocessed_messages
