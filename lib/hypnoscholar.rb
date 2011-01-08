@@ -179,7 +179,7 @@ class Hypnoscholar
 		words = words.uniq.sort { |w,w2| w2.length <=> w.length }
 
 		words.each do |word|
-			next if prevwords.include?(word) || Dict.find(word).nil?
+			next if prevwords.include?(word) || @dict.find(word).nil?
 
 			results = Scholar.search(word)
 			results = results.sample(results.length) # randomize
@@ -188,14 +188,14 @@ class Hypnoscholar
 
 			next if result.nil?
 
-			link = bitly.shorten(result[:url]).short_url
+			link = @bitly.shorten(result[:url]).short_url
 
 			char_alloc = 140-link.length-1
 
 			tweet = "#{result[:text][0..char_alloc]} #{link}"
 
 			puts tweet
-			client.update(tweet)
+			@twitter.update(tweet)
 
 			prevwords << word
 
