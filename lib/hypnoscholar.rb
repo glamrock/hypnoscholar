@@ -183,7 +183,7 @@ class Hypnoscholar
 		if rn < 0.4 && word
 			definition_tweet(word)
 		elsif rn < 0.8
-			content.bad_translate
+			content.bad_translate.gsub('.', '!')
 		else
 			`/usr/games/fortune -s -n 120`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
 		end
