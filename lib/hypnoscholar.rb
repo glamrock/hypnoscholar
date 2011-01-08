@@ -5,7 +5,7 @@ require 'bitly'
 require 'words'
 require 'active_record'
 
-$dir = File.dirname(__FILE__)
+$dir = File.absolute_path(File.dirname(__FILE__))
 require "#{$dir}/gscholar"
 
 ActiveRecord::Base.establish_connection(
@@ -59,7 +59,7 @@ class Hypnoscholar
 			sender_name = query.user_screen_name
 			content = query.text.gsub(/^@hypnoscholar /, '')
 		else
-			sender_name = query.sender_name
+			sender_name = query.sender_screen_name
 			content = query.text
 		end
 
@@ -81,14 +81,15 @@ class Hypnoscholar
 	end
 
 	# Save a copy of this direct message to the database.
-	# Generally indicates that we've responded to it.
+	# Assumes it is unprocessed.
 	def save_message(mash)
 		message = Message.new({
 			original_id: mash.id,
 			text: mash.text,
-			sender_id: mash.sender_id,
-			recipient_id: mash.recipient_id,
-			posted_at: mash.created_at
+			sender_screen_name: mash.sender_screen_name,
+			recipient_screen_name: mash.recipient_screen_name,
+			posted_at: mash.created_at,
+			processed: false
 		})
 
 		message.save
@@ -119,26 +120,29 @@ class Hypnoscholar
 		tweet.save
 	end
 
-	# Retrieve and respond to direct messages.
-	def respond_to_messages
-		messages = Twitter.direct_messages
-
-		messages.each do |mash|
-			if Message.find_by_original_id(mash.id).nil? # Only investigate if we haven't seen it before.
-				response = make_response(mash)
-
-				unless response.nil? # Do we know how to respond?
-					@twitter.direct_message_create(mash.sender_id, response)
-					save_message(mash)
-				end
-			end
-		end
+	# Retrieve and save direct messages for processing
+	def retrieve_messages
+		params = Message.last.nil? ? {} : {:since_id => Message.last.original_id}
+		Twitter.direct_messages(params).each {|mash| save_message(mash)}
 	end
 
-	# Retrieve mentions for processing.
+	# Retrieve and save mentions for processing.
 	def retrieve_mentions
 		params = Tweet.last.nil? ? {} : {:since_id => Tweet.last.original_id}
 		Twitter.mentions(params).each {|mash| save_tweet(mash)}
+	end
+
+	# Go through mentions we haven't responded to yet and see if we can say something.
+	def process_messages
+		Message.where(:processed => false).each do |message|
+			response = make_response(message)
+			unless response.nil?
+				p response
+				@twitter.direct_message_create(message.sender_screen_name, response)
+				message.processed = true
+				message.save
+			end
+		end
 	end
 
 	# Go through mentions we haven't responded to yet and see if we can say something.
