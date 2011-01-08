@@ -12,7 +12,7 @@ class Hash
 	end
 end
 
-$dryrun = (`hostname` != 'hypnos')
+$dryrun = (`hostname`.strip != 'hypnos')
 $creator = 'somnidea'
 
 $dir = File.absolute_path(File.dirname(__FILE__))
@@ -181,7 +181,7 @@ class Hypnoscholar
 		if rn < 0.8 && word
 			definition_tweet(word)
 		else
-			`fortune -s -n 120`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
+			`/usr/games/fortune -s -n 120`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
 		end
 	end
 
