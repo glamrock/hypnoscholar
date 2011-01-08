@@ -121,7 +121,7 @@ class Hypnoscholar
 
 	# Determine if a string of text is sciency or not. Currently not very sophisticated.
 	def is_sciency?(text)
-		text.downcase.include?('scien')
+		!text.downcase.match(/scien|logy|sophy|tech/).nil?
 	end
 
 	### Local Data Retrieval Methods
