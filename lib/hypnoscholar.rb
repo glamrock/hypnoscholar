@@ -6,6 +6,12 @@ require 'words'
 require 'active_record'
 require 'open-uri'
 
+class Hash
+	def value_sort
+		sort {|a,b| a[1] <=> b[1]}
+	end
+end
+
 $dryrun = (`hostname` != 'hypnos')
 $creator = 'somnidea'
 
@@ -85,29 +91,132 @@ class Hypnoscholar
 		@bitly = Bitly.new('somnidea', 'R_3e01b5af02f7232d7ea171aa9df6fdac')
 	end
 
+
+
+	### Utility Methods
+
+	def extract_words(text)
+		text.scan(/[\w']+/).
+			map {|w| w.downcase}
+	end
+
+	def word_frequencies(text)
+		fmap = {}
+		words = extract_words(text)
+		words.uniq.each do |w|
+			fmap[w] = words.count(w)/words.length.to_f
+		end
+		fmap
+	end
+		
+
+	# Truncate a given string to fit within the character limit, adding '...' as required.
+	def truncate(str, charlimit)
+		if str.length <= charlimit
+			str
+		else
+			str[0..(charlimit-3-1)] + '...'
+		end
+	end
+
 	# Determine if a string of text is sciency or not. Currently not very sophisticated.
 	def is_sciency?(text)
 		text.downcase.include?('scien')
 	end
 
-	# What was our last tweet?
+	### Local Data Retrieval Methods
+
 	def last_tweet
 		Tweet.where({:user_screen_name => 'hypnoscholar'}, :order => "posted_at ASC").last
 	end
 
-	# What was our last non-reply tweet?
 	def last_update
 		Tweet.where({:user_screen_name => 'hypnoscholar', :in_reply_to_screen_name => nil}, :order => "posted_at ASC").last
 	end
 
-	# When did we last post a non-reply tweet?
 	def time_of_last_update
 		last_tweet ? last_tweet.posted_at : (Time.new - Time.new.to_f)
 	end
 
-	# Can we post another non-reply tweet now?
 	def can_update_again_yet?
 		(Time.now - time_of_last_tweet) > 60*60
+	end
+
+	def unprocessed_messages
+		Message.where(:recipient_screen_name => 'hypnoscholar', :processed => false)
+	end
+
+	def unprocessed_mentions
+		Tweet.where(:in_reply_to_screen_name => 'hypnoscholar', :processed => false)
+	end
+
+
+
+	### Response Construction Methods
+
+	# Generate tweet with a short title and a bitly link.
+	def make_link_tweet(title, longlink, via=nil)
+		link = @bitly.shorten(longlink).short_url
+		viastr = " (via @#{via})"
+
+		title_constraint = 140-link.length-1
+		title_constraint -= viastr.length unless via.nil?
+		return "#{truncate(title, title_constraint)} #{link}" + (via.nil? ? '' : viastr)
+	end
+
+	# Retrieve the first noun from the array of words given.
+	def find_noun(words)
+		words.find { |w| lemma = @dict.find(w); lemma && !lemma.nouns.empty? }
+	end
+
+	# These are just plain random replies based on whatever hypnoscholar feels like.
+	def random_reply_tweet(content)
+		rn = rand
+
+		if content
+			words = extract_words(content)
+			word = find_noun(words.sample(words.length))
+		end
+
+		if rn < 0.8 && word
+			definition_tweet(word)
+		else
+			`fortune -s -n 120`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
+		end
+	end
+
+	# Tweet a definition of the given noun.
+	def definition_tweet(word)
+		definition = nil
+
+		lemma = @dict.find(word)
+
+		lemma.nouns.each do |noun|
+			definition = noun.gloss if definition.nil? || noun.gloss.length < definition.length
+		end
+
+		"A #{word} is #{definition}!"
+	end
+
+	# Generates tweet with random information related to a document. Mostly.
+	def random_page_related_tweet(doc, content=nil)
+		words = extract_words(doc.text)
+		words = words.reject {|w| w.length < 5 || words.count(w) < 2}
+
+		lemma = nil
+		word = find_noun(words.sample(words.length))
+		rn = rand
+
+		if rn < 0.05
+			ele = ['p', 'div', 'script', 'img'].sample
+			"Did you know that page has #{doc.css(ele).length} <#{ele}> tags? :o"
+		elsif rn < 0.1
+			"That page uses the word '#{word}' #{words.count(word)} times!"
+		elsif rn < 0.9 
+			definition_tweet(word)
+		else
+			random_reply_tweet(content)
+		end
 	end
 
 	def construct_response(content, sender_name)
@@ -129,12 +238,13 @@ class Hypnoscholar
 			if is_sciency?(title) && can_update_again_yet?
 				update make_link_tweet(title, link, sender_name)
 				return false # Processed successfully, no need for reply.
+			else
+				return random_page_related_tweet(doc, content)
 			end
 		else
-			return nil # Not sure what to do.
+			random_reply_tweet(content)
 		end
 	end
-
 
 	def assemble_response(query)
 		if query.is_a? Tweet
@@ -161,6 +271,9 @@ class Hypnoscholar
 
 		return resp
 	end
+
+
+	### Local Data Storage Methods
 
 	# Save a copy of this direct message to the database.
 	# Assumes it is unprocessed.
@@ -210,6 +323,10 @@ class Hypnoscholar
 		tweet.save
 	end
 
+
+
+	### Remote Data Retrieval Methods
+
 	# Retrieve and save direct messages for processing
 	def retrieve_messages
 		params = Message.last.nil? ? {} : {:since_id => Message.last.original_id}
@@ -227,6 +344,10 @@ class Hypnoscholar
 		params = last_tweet.nil? ? {} : {:since_id => last_tweet.posted_at}
 		Twitter.user_timeline('hypnoscholar', params).each {|mash| save_tweet(mash)}
 	end
+
+
+
+	### Low-Level Update Methods
 
 	# Reply to a direct message with the given content.
 	def send_reply_to_message(message, response)
@@ -264,28 +385,9 @@ class Hypnoscholar
 		end
 	end
 
-	# Truncate a given string to fit within the character limit, adding '...' as required.
-	def truncate(str, charlimit)
-		if str.length <= charlimit
-			str
-		else
-			str[0..(charlimit-3-1)] + '...'
-		end
-	end
 
-	# Generate tweet with a short title and a bitly link.
-	def make_link_tweet(title, longlink, via=nil)
-		link = @bitly.shorten(longlink).short_url
-		viastr = " (via @#{via})"
 
-		title_constraint = 140-link.length-1
-		title_constraint -= viastr.length unless via.nil?
-		return "#{truncate(title, title_constraint)} #{link}" + (via.nil? ? '' : viastr)
-	end
-
-	def unprocessed_messages
-		Message.where(:recipient_screen_name => 'hypnoscholar', :processed => false)
-	end
+	### High-Level Update Generators
 
 	# Go through mentions we haven't responded to yet and see if we can say something.
 	def process_messages
@@ -293,10 +395,6 @@ class Hypnoscholar
 			response = assemble_response(message)
 			send_reply_to_message(message, response) unless response.nil?
 		end
-	end
-
-	def unprocessed_mentions
-		Tweet.where(:in_reply_to_screen_name => 'hypnoscholar', :processed => false)
 	end
 
 	# Go through mentions we haven't responded to yet and see if we can say something.
