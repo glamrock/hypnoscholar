@@ -17,6 +17,7 @@ $creator = 'somnidea'
 
 $dir = File.absolute_path(File.dirname(__FILE__))
 require "#{$dir}/gscholar"
+require "#{$dir}/gtranslate"
 
 ActiveRecord::Base.establish_connection(
 	:adapter => "mysql",
@@ -111,11 +112,11 @@ class Hypnoscholar
 		
 
 	# Truncate a given string to fit within the character limit, adding '...' as required.
-	def truncate(str, charlimit)
+	def truncate(str, charlimit, terminator='...')
 		if str.length <= charlimit
 			str
 		else
-			str[0..(charlimit-3-1)] + '...'
+			str[0..(charlimit-terminator.length-1)] + terminator
 		end
 	end
 
@@ -178,8 +179,10 @@ class Hypnoscholar
 			word = find_noun(words.sample(words.length))
 		end
 
-		if rn < 0.8 && word
+		if rn < 0.4 && word
 			definition_tweet(word)
+		elsif rn < 0.8
+			content.bad_translate
 		else
 			`/usr/games/fortune -s -n 120`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
 		end
