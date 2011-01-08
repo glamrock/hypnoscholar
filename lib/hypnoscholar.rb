@@ -5,6 +5,7 @@ require 'bitly'
 require 'words'
 require 'active_record'
 require 'open-uri'
+require 'curl'
 
 class Hash
 	def value_sort
@@ -234,7 +235,8 @@ class Hypnoscholar
 		elsif match = content.match(/http:\/\/[^ ]+/)
 			# Interesting link?
 			link = match[0]
-			doc = Nokogiri(open(link).read)
+			resp = Curl::Easy.http_get(link) { |easy| easy.follow_location = true }
+			doc = Nokogiri(resp.body_str)
 
 			title = doc.css('title').text
 
