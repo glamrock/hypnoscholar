@@ -89,7 +89,6 @@ class Hypnoscholar
 			sender_screen_name: mash.sender_screen_name,
 			recipient_screen_name: mash.recipient_screen_name,
 			posted_at: mash.created_at,
-			processed: false
 		}
 
 		message = Message.find_by_original_id(mash.id)
@@ -98,6 +97,7 @@ class Hypnoscholar
 			message.update_attributes(props)
 		else
 			message = Message.new(props)
+			message.processed = false
 		end
 
 		message.save
@@ -114,7 +114,6 @@ class Hypnoscholar
 			in_reply_to_status_id: mash.in_reply_to_status_id,
 			source: mash.source,
 			posted_at: mash.created_at,
-			processed: false
 		}
 
 		tweet = Tweet.find_by_original_id(mash.id)
@@ -123,6 +122,7 @@ class Hypnoscholar
 			tweet.update_attributes(props)
 		else
 			tweet = Tweet.new(props)
+			tweet.processed = false
 		end
 
 		tweet.save
