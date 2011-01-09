@@ -10,8 +10,8 @@ class Puzzle < ActiveRecord::Base
 
 		def anagram(source)
 			if source.is_a? Array
-				longwords = longest_words(source)
-				source = longwords.sample(longwords.length).find { |word| !Dict.find(word).nil? }
+				source = source.sample(source.length).reject {|word| word.length < 9}.
+							find { |word| !Dict.find(word).nil? }
 			end
 
 			anagram = source.chars.to_a.sample(source.length).join

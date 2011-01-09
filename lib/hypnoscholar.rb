@@ -127,8 +127,7 @@ require "#{$dir}/puzzles"
 
 class String
 	def words
-		self.scan(/[\w']+/).
-			map {|w| w.downcase}
+		self.scan(/[\w']+/).map {|w| w.downcase}
 	end
 end
 
@@ -523,7 +522,8 @@ module Hypnoscholar
 			
 			unless last_puzzle_type == 'anagram'
 				possibilities << Proc.new {
-					words = Tweet.all.map { |tweet| tweet.text }.join(' ').words
+					tweets = Tweet.where({}, :limit => 200, :order => "posted_at DESC")
+					words = tweets.map { |tweet| tweet.text }.join(' ').words
 					puzzle = Puzzle.anagram(words)
 				}
 			end
