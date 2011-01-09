@@ -276,15 +276,18 @@ module Hypnoscholar
 				# Puzzle Answer!
 				puzzle = origin.puzzle
 
+				incorrect = ["Incorrect, sorry!", "Nope!", "Try again!", "Better luck next time!"]
+				correct = ["Correct! ^_^", "Good job!", "That's right! :D", "Well done!"]
+
 				return "You can't answer your own puzzle!" if puzzle.author_screen_name == sender_name
 
-				return "Incorrect, sorry!" unless puzzle.answered_by?(content)
+				return incorrect.sample unless puzzle.answered_by?(content)
 
 				if puzzle.correct_solutions.length == 1 # First correct answer!
 					update "First correct answer for Puzzle #{puzzle.id} goes to: @#{sender_name}!"
 					return false
 				else
-					return "Correct! ^_^"
+					return correct.sample
 				end
 
 			elsif query.is_a?(Message) && content.match(/Q:/)
