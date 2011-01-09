@@ -126,12 +126,10 @@ require "#{$dir}/gtranslate"
 require "#{$dir}/puzzles"
 
 class String
-	def extract_words
+	def words
 		self.scan(/[\w']+/).
 			map {|w| w.downcase}
 	end
-
-	alias :words :extract_words
 end
 
 module Hypnoscholar
@@ -140,7 +138,7 @@ module Hypnoscholar
 
 		def word_frequencies(text)
 			fmap = {}
-			words = extract_words(text)
+			words = text.words
 			words.uniq.each do |w|
 				fmap[w] = words.count(w)/words.length.to_f
 			end
@@ -210,7 +208,7 @@ module Hypnoscholar
 			rn = rand
 
 			if content
-				words = extract_words(content)
+				words = content.words
 				word = find_noun(words.sample(words.length))
 			end
 
@@ -238,7 +236,7 @@ module Hypnoscholar
 
 		# Generates tweet with random information related to a document. Mostly.
 		def random_page_related_tweet(doc, content=nil)
-			words = extract_words(doc.text)
+			words = doc.text.words
 			words = words.reject {|w| w.length < 5 || words.count(w) < 2}
 
 			lemma = nil
@@ -525,7 +523,7 @@ module Hypnoscholar
 			
 			unless last_puzzle_type == 'anagram'
 				possibilities << Proc.new {
-					words = extract_words(Tweet.all.map { |tweet| tweet.text }.join(' '))
+					words = Tweet.all.map { |tweet| tweet.text }.join(' ').words
 					puzzle = Puzzle.anagram(words)
 				}
 			end
