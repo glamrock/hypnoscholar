@@ -31,6 +31,6 @@ CREATE TABLE IF NOT EXISTS `puzzles` (
 	`tweet_id` INT UNSIGNED,
 	`text` VARCHAR(255) NOT NULL,
 	`solution` VARCHAR(255),
-	`commentary` VARCHAR(255),
-	`puzzle_type` VARCHAR(255) NOT NULL
+	`puzzle_type` VARCHAR(255) NOT NULL,
+	`author_screen_name` VARCHAR(255)
 ) ENGINE=INNODB;

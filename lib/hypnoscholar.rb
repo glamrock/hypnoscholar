@@ -166,7 +166,12 @@ module Hypnoscholar
 		end
 
 		def last_update
-			Tweet.where({:user_screen_name => 'hypnoscholar', :in_reply_to_screen_name => nil}, :order => "posted_at ASC").last
+			Tweet.where({:user_screen_name => 'hypnoscholar', :in_reply_to_screen_name => nil}, :order => "posted_at DESC").first
+		end
+
+		def last_tweeted_puzzle
+			puzzles = Puzzle.where("tweet_id IS NOT NULL")
+			puzzles.sort { |x, y| y.tweet.posted_at <=> x.tweet.posted_at }.first
 		end
 
 		def time_of_last_update
@@ -254,7 +259,11 @@ module Hypnoscholar
 			end
 		end
 
-		def construct_response(content, sender_name, origin=nil)
+		def following?(screen_name)
+			TwitterAPI.friendship_exists?('hypnoscholar', screen_name)
+		end
+
+		def construct_response(content, sender_name, query, origin=nil)
 			if content[0] == "$"
 				# Shell Command
 				if sender_name != $creator
@@ -265,17 +274,33 @@ module Hypnoscholar
 
 			elsif !origin.nil? && origin.puzzle
 				# Puzzle Answer!
-				if origin.puzzle.answered_by?(content)
-					if origin.puzzle.correct_solutions.length == 1 # First correct answer!
-						update "First correct answer for Puzzle #{origin.puzzle.id} goes to: @#{sender_name}!"
-						return false
-					else
-						return "Correct! ^_^"
-					end
+				puzzle = origin.puzzle
+
+				return "You can't answer your own puzzle!" if puzzle.author_screen_name == sender_name
+
+				return "Incorrect, sorry!" unless puzzle.answered_by?(content)
+
+				if puzzle.correct_solutions.length == 1 # First correct answer!
+					update "First correct answer for Puzzle #{puzzle.id} goes to: @#{sender_name}!"
+					return false
 				else
-					return "Incorrect, sorry!"
+					return "Correct! ^_^"
 				end
-				
+
+			elsif query.is_a?(Message) && content.match(/Q:/)
+				# Puzzle contribution!
+				return "You'll have to solve a few more puzzles before you can add your own, I'm afraid!" unless following?(sender_name)
+
+				match = content.match(/Q: (.+) A: (.+)$/)
+
+				return "That's not how you make a puzzle. You need both a \"Q:\" and an \"A:\"." if match.nil?
+
+				puzzle = Puzzle.new(:author_screen_name => sender_name, :text => match[0], 
+									:solution => match[1], :puzzle_type => 'special')
+
+				puzzle.save
+
+				return "Acknowledged! Your contribution will be listed as Puzzle #{puzzle.id} ^_^"
 
 			elsif match = content.match(/http:\/\/[^ ]+/)
 				# Interesting link?
@@ -313,9 +338,9 @@ module Hypnoscholar
 			end
 
 			begin
-				resp = construct_response(content, sender_name, origin)
+				resp = construct_response(content, sender_name, query)
 			rescue Exception => e
-				Log.error "Error responding to query `#{content}`: #{e.message}"
+				Log.error "Error responding to query `#{content}`: #{e.message}\n  #{e.backtrace[0]}"
 				#resp = "Sorry, I encountered an error while thinking about how to reply! :("
 				resp = nil
 			end
@@ -539,8 +564,15 @@ module Hypnoscholar
 			puzzle = generate_puzzle if puzzle.nil?
 
 			unless puzzle.nil?
-				puzzline = "Puzzle #{puzzle.id}" + (puzzle.puzzle_type == 'special' ? ' (Special)' : '')
-				tweet = update("#{puzzline}: #{puzzle.text}" + (puzzle.commentary ? " #{puzzle.commentary}" : ''))
+				puzzline = "Puzzle #{puzzle.id}"
+
+				if puzzle.author_screen_name
+					puzzline += "(by @#{puzzle.author_screen_name})"
+				elsif puzzle.puzzle_type == 'special'
+					puzzline += "(Special)"
+				end
+
+				tweet = update("#{puzzline}: #{puzzle.text}")
 				if tweet.is_a? Tweet
 					puzzle.tweet = tweet
 					puzzle.save
