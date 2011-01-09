@@ -350,7 +350,13 @@ class Hypnoscholar
 		Twitter.user_timeline('hypnoscholar', params).each {|mash| save_tweet(mash)}
 	end
 
-
+	# Retrieve and save local copies of home timeline tweets
+	def retrieve_home_timeline
+		last = Tweet.where({}, :order => "posted_at ASC").last
+		params = { :count => 200 }
+		params[:since_id] = last.posted_at unless last.nil?
+		Twitter.user_timeline('hypnoscholar', params).each {|mash| save_tweet(mash)}
+	end
 
 	### Low-Level Update Methods
 
