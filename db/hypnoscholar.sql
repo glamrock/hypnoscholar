@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
 CREATE TABLE IF NOT EXISTS `puzzles` (
 	`puzzle_id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
 	`tweet_id` INT UNSIGNED,
-	`content` VARCHAR(255) NOT NULL,
+	`text` VARCHAR(255) NOT NULL,
 	`solution` VARCHAR(255),
 	`commentary` VARCHAR(255),
 	`puzzle_type` VARCHAR(255) NOT NULL

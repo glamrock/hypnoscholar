@@ -1,8 +1,6 @@
 require 'words'
 require 'active_record'
 
-PUZZLE_ANAGRAM = 0
-
 class Puzzle < ActiveRecord::Base
 	class << self
 		def longest_words(words)
@@ -18,7 +16,7 @@ class Puzzle < ActiveRecord::Base
 
 			anagram = source.chars.to_a.sample(source.length).join
 
-			puzzle = Puzzle.new(:content => anagram, :solution => source, :puzzle_type => 'anagram')
+			puzzle = Puzzle.new(:text => anagram, :solution => source, :puzzle_type => 'anagram')
 			puzzle.save
 			puzzle
 		end
@@ -29,7 +27,19 @@ class Puzzle < ActiveRecord::Base
 
 	belongs_to :tweet
 
+	def answered_by?(content)
+		if solution.words.length > 1
+			content.include?(solution)
+		else
+			content.words.include?(solution)
+		end
+	end
+
 	def attempted_solutions
-		Tweet.where(:in_reply_to_status_id => tweet.id)
+		Tweet.where(:in_reply_to_status_id => tweet.original_id)
+	end
+
+	def correct_solutions
+		attempted_solutions.find_all { |tweet| answered_by?(tweet.text) }
 	end
 end
