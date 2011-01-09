@@ -13,7 +13,7 @@ class Hash
 	end
 end
 
-$dryrun = (`hostname`.strip != 'hypnos')
+$dryrun = true#(`hostname`.strip != 'hypnos')
 $creator = 'somnidea'
 
 ActiveRecord::Base.establish_connection(
@@ -562,9 +562,9 @@ module Hypnoscholar
 				}
 			end
 
-			possibilities['cryptogram'] Proc.new { Puzzle.cryptogram(tweetable_fortune(100)) }
+			possibilities['cryptogram'] = Proc.new { Puzzle.cryptogram(tweetable_fortune(100)) }
 
-			if puzzle_type != random
+			if puzzle_type != 'random'
 				possibilities[puzzle_type].call
 			else
 				possibilities.reject { |k| k == last_puzzle_type }.values.sample.call
