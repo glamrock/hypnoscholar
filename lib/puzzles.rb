@@ -8,17 +8,48 @@ class Puzzle < ActiveRecord::Base
 			words.find_all { |w| w.length == maxlen }
 		end
 
+		def one_string(source)
+			return source unless source.is_a? Array
+			source.sample(source.length).reject {|word| word.length < 9}.
+						find { |word| !Dict.find(word).nil? }
+		end
+
+		def subcipher(source, alternatives)
+			cipher = {}; alphabet = ('a'..'z').to_a
+
+			0.upto(alphabet.length) {|i| cipher[alphabet[i]] = alternatives[i]}
+
+			source.downcase.chars.map { |ch| cipher[ch]||ch }.join
+		end
+
+		# Basic substitution cipher
+		def cryptogram(source)
+			source = one_string(source).downcase
+
+			alphabet = ('a'..'z').to_a
+			crypted = subcipher(source, alphabet.sample(alphabet.length))
+
+			Puzzle.new(:text => crypted, :solution => source, :puzzle_type => 'cryptogram')
+		end
+
+		# Randomized DNA codon substitution cipher
+		def dnagram(source)
+			source = one_string(source).downcase
+
+			reserved = ['ATG', 'TAA', 'TAG', 'TGA']
+			codons = ['A', 'T', 'C', 'G'].repeated_permutation(3).to_a
+			codons = codons.sample(codons.length) - reserved
+
+			Puzzle.new(:text => subcipher(source, codons), :solution => source, :puzzle_type => 'dnagram')
+		end
+
+		# Standard one-word anagram.
 		def anagram(source)
-			if source.is_a? Array
-				source = source.sample(source.length).reject {|word| word.length < 9}.
-							find { |word| !Dict.find(word).nil? }
-			end
+			source = one_string(source)
 
 			anagram = source.chars.to_a.sample(source.length).join
 
-			puzzle = Puzzle.new(:text => anagram, :solution => source, :puzzle_type => 'anagram')
-			puzzle.save
-			puzzle
+			Puzzle.new(:text => anagram, :solution => source, :puzzle_type => 'anagram')
 		end
 	end
 

@@ -207,6 +207,10 @@ module Hypnoscholar
 			words.find { |w| lemma = Dict.find(w); lemma && !lemma.nouns.empty? }
 		end
 
+		def tweetable_fortune(length=120)
+			`/usr/games/fortune -s -n #{length}`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
+		end
+
 		# These are just plain random replies based on whatever hypnoscholar feels like.
 		def random_reply_tweet(content)
 			rn = rand
@@ -221,7 +225,7 @@ module Hypnoscholar
 			elsif rn < 0.95
 				content.bad_translate.gsub('.', '!')
 			else
-				`/usr/games/fortune -s -n 120`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
+				tweetable_fortune
 			end
 		end
 
@@ -545,24 +549,27 @@ module Hypnoscholar
 		end
 
 		# Generate a puzzle for tweeting.
-		def generate_puzzle
-			possibilities = []
+		def generate_puzzle(puzzle_type='random')
+			possibilities = {}
 
 			last_puzzle_type = Puzzle.last.nil? ? nil : Puzzle.last.puzzle_type
 
-			puzzle = nil
-			
-			unless last_puzzle_type == 'anagram'
-				possibilities << Proc.new {
+			['anagram', 'dnagram'].each do |puzzle_type|
+				possibilities[puzzle_type] = Proc.new {
 					tweets = Tweet.where({}, :limit => 200, :order => "posted_at DESC")
 					words = tweets.map { |tweet| tweet.text }.join(' ').words
-					puzzle = Puzzle.anagram(words)
+					Puzzle.send(puzzle_type, words)
 				}
 			end
 
-			possibilities.sample.call
+			possibilities['cryptogram'] Proc.new { Puzzle.cryptogram(tweetable_fortune(100)) }
 
-			puzzle
+			if puzzle_type != random
+				possibilities[puzzle_type].call
+			else
+				possibilities.reject { |k| k == last_puzzle_type }.values.sample.call
+			end
+
 		end
 
 		# Tweet the next puzzle in sequence.
@@ -579,7 +586,11 @@ module Hypnoscholar
 					puzzline += " (Special)"
 				end
 
-				tweet = update("#{puzzline}: #{puzzle.text} #hypnospuzzle")
+				tweet_text = "#{puzzline}: #{puzzle.text}"
+
+				tweet_text += " ##{puzzle.puzzle_type}" unless puzzle.puzzle_type == 'special'
+
+				tweet = update(tweet_text)
 				if tweet.is_a? Tweet
 					puzzle.tweet = tweet
 					puzzle.save
