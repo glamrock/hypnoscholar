@@ -123,7 +123,7 @@ class Hypnoscholar
 
 	# Determine if a string of text is sciency or not. Currently not very sophisticated.
 	def is_sciency?(text)
-		!text.downcase.match(/scien|logy|sophy|tech/).nil?
+		!text.downcase.match(/scien|logy|sophy|tech|comput/).nil?
 	end
 
 	### Local Data Retrieval Methods
@@ -182,7 +182,7 @@ class Hypnoscholar
 
 		if rn < 0.4 && word
 			definition_tweet(word)
-		elsif rn < 0.8
+		elsif rn < 0.95
 			content.bad_translate.gsub('.', '!')
 		else
 			`/usr/games/fortune -s -n 120`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
