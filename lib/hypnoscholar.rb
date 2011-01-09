@@ -578,6 +578,7 @@ module Hypnoscholar
 			puzzle = generate_puzzle if puzzle.nil?
 
 			unless puzzle.nil?
+				puzzle.save
 				puzzline = "Puzzle #{puzzle.id}"
 
 				if puzzle.author_screen_name
