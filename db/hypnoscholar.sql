@@ -1,4 +1,4 @@
-DROP DATABASE `hypnoscholar`;
+-- DROP DATABASE `hypnoscholar`;
 CREATE DATABASE IF NOT EXISTS `hypnoscholar`;
 GRANT ALL ON hypnoscholar.* TO hypnoscholar@localhost IDENTIFIED BY "st4lkyp0war";
 USE `hypnoscholar`;
@@ -24,3 +24,13 @@ CREATE TABLE IF NOT EXISTS `messages` (
 	`posted_at` DATETIME NOT NULL,
 	`processed` BOOLEAN NOT NULL DEFAULT FALSE
 ) ENGINE=INNOBD;
+
+-- DROP TABLE `puzzles`;
+CREATE TABLE IF NOT EXISTS `puzzles` (
+	`puzzle_id` INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+	`tweet_id` INT UNSIGNED,
+	`content` VARCHAR(255) NOT NULL,
+	`solution` VARCHAR(255),
+	`commentary` VARCHAR(255),
+	`puzzle_type` VARCHAR(255) NOT NULL
+) ENGINE=INNODB;
