@@ -169,9 +169,12 @@ module Hypnoscholar
 			Tweet.where({:user_screen_name => 'hypnoscholar', :in_reply_to_screen_name => nil}, :order => "posted_at DESC").first
 		end
 
+		def tweeted_puzzles
+			Puzzle.where("tweet_id IS NOT NULL")
+		end
+
 		def last_tweeted_puzzle
-			puzzles = Puzzle.where("tweet_id IS NOT NULL")
-			puzzles.sort { |x, y| y.tweet.posted_at <=> x.tweet.posted_at }.first
+			tweeted_puzzles.sort { |x, y| y.tweet.posted_at <=> x.tweet.posted_at }.first
 		end
 
 		def time_of_last_update
