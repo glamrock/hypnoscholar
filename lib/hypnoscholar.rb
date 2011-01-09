@@ -295,8 +295,12 @@ module Hypnoscholar
 
 				return "That's not how you make a puzzle. You need both a \"Q:\" and an \"A:\"." if match.nil?
 
-				puzzle = Puzzle.new(:author_screen_name => sender_name, :text => match[0], 
-									:solution => match[1], :puzzle_type => 'special')
+				mocktweet = "Puzzle #{Puzzle.last.id} (by @#{sender_name}): " + match[1]
+
+				return "Sorry, that puzzle is #{mocktweet.length-140} characters too long >.<" if mocktweet.length > 140
+
+				puzzle = Puzzle.new(:author_screen_name => sender_name, :text => match[1], 
+									:solution => match[2], :puzzle_type => 'special')
 
 				puzzle.save
 
