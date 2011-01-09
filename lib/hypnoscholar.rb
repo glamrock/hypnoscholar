@@ -298,7 +298,7 @@ module Hypnoscholar
 
 				return "That's not how you make a puzzle. You need both a \"Q:\" and an \"A:\"." if match.nil?
 
-				mocktweet = "Puzzle #{Puzzle.last.id} (by @#{sender_name}): " + match[1]
+				mocktweet = "Puzzle #{Puzzle.last.id} (by @#{sender_name}): " + match[1] + " #hypnospuzzle"
 
 				return "Sorry, that puzzle is #{mocktweet.length-140} characters too long >.<" if mocktweet.length > 140
 
@@ -579,7 +579,7 @@ module Hypnoscholar
 					puzzline += " (Special)"
 				end
 
-				tweet = update("#{puzzline}: #{puzzle.text}")
+				tweet = update("#{puzzline}: #{puzzle.text} #hypnospuzzle")
 				if tweet.is_a? Tweet
 					puzzle.tweet = tweet
 					puzzle.save
