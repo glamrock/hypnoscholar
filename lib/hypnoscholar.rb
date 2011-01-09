@@ -567,9 +567,9 @@ module Hypnoscholar
 				puzzline = "Puzzle #{puzzle.id}"
 
 				if puzzle.author_screen_name
-					puzzline += "(by @#{puzzle.author_screen_name})"
+					puzzline += " (by @#{puzzle.author_screen_name})"
 				elsif puzzle.puzzle_type == 'special'
-					puzzline += "(Special)"
+					puzzline += " (Special)"
 				end
 
 				tweet = update("#{puzzline}: #{puzzle.text}")
