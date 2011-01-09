@@ -13,7 +13,7 @@ class Hash
 	end
 end
 
-$dryrun = true#(`hostname`.strip != 'hypnos')
+$dryrun = (`hostname`.strip != 'hypnos')
 $creator = 'somnidea'
 
 ActiveRecord::Base.establish_connection(
