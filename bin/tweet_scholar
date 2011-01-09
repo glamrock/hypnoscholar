@@ -5,6 +5,5 @@ require "#{$dir}/../lib/hypnoscholar"
 
 
 if __FILE__ == $0
-	hypno = Hypnoscholar.new
-	hypno.tweet_scholar_result
+	Hypnoscholar.tweet_scholar_result
 end

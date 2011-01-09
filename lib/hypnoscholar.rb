@@ -536,7 +536,7 @@ module Hypnoscholar
 		end
 
 		# Tweet the next puzzle in sequence.
-		def puzzle_tweet
+		def tweet_puzzle
 			puzzle = Puzzle.where(:tweet_id => nil).first
 			puzzle = generate_puzzle if puzzle.nil?
 

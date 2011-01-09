@@ -5,6 +5,6 @@ require "#{$dir}/../lib/hypnoscholar"
 
 
 if __FILE__ == $0
-	hypno = Hypnoscholar.new
+	hypno = Hypnoscholar
 	hypno.retrieve_home_timeline
 end
