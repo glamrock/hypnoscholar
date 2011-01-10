@@ -349,10 +349,11 @@ module Hypnoscholar
 			else
 				sender_name = query.sender_screen_name
 				content = query.text
+				origin = nil
 			end
 
 			begin
-				resp = construct_response(content, sender_name, query)
+				resp = construct_response(content, sender_name, query, origin)
 			rescue Exception => e
 				Log.error "Error responding to query `#{content}`: #{e.message}\n  #{e.backtrace[0]}"
 				#resp = "Sorry, I encountered an error while thinking about how to reply! :("
