@@ -305,7 +305,7 @@ module Hypnoscholar
 
 				return "That's not how you make a puzzle. You need both a \"Q:\" and an \"A:\"." if match.nil?
 
-				mocktweet = "Puzzle #{Puzzle.last.id} (by @#{sender_name}): " + match[1] + " #hypnospuzzle"
+				mocktweet = "Puzzle #{Puzzle.last.id} (by @#{sender_name}): " + match[1]
 
 				return "Sorry, that puzzle is #{mocktweet.length-140} characters too long >.<" if mocktweet.length > 140
 
@@ -336,6 +336,7 @@ module Hypnoscholar
 		end
 
 		def find_or_retrieve_tweet(original_id)
+			return nil unless original_id
 			tweet = Tweet.find_by_original_id(original_id)
 			tweet = save_tweet(TwitterAPI.status(original_id)) if tweet.nil?
 			tweet
