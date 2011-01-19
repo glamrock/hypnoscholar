@@ -211,7 +211,7 @@ module Hypnoscholar
 		end
 
 		def tweetable_fortune(length=120)
-			`/usr/games/fortune -s -n #{length}`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub('.', '!')
+			`/usr/games/fortune -s -n #{length}`.gsub(/[\n\t]/, ' ').gsub(/--.+$/, '').strip.gsub(/\s+/, ' ').gsub('.', '!')
 		end
 
 		# These are just plain random replies based on whatever hypnoscholar feels like.
