@@ -51,6 +51,13 @@ class Puzzle < ActiveRecord::Base
 
 			Puzzle.new(:text => anagram, :solution => source, :puzzle_type => 'anagram')
 		end
+
+        # One-word lossy binary translation
+        def binarygram(source)
+          source = one_string(source).downcase
+
+          source.chars.map { |ch| (ch.ord-'a'.ord).to_s(2) }.join
+        end
 	end
 
 	set_table_name 'puzzles'

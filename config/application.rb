@@ -513,7 +513,7 @@ module Hypnoscholar
 
             last_puzzle_type = Puzzle.last.nil? ? nil : Puzzle.last.puzzle_type
 
-            ['anagram', 'dnagram'].each do |puzzle_type|
+            ['binarygram', 'anagram', 'dnagram'].each do |puzzle_type|
                 possibilities[puzzle_type] = Proc.new {
                     tweets = Tweet.where({}, :limit => 200, :order => "posted_at DESC")
                     words = tweets.map { |tweet| tweet.text }.join(' ').words
