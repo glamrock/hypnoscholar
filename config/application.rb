@@ -9,6 +9,10 @@ Bundler.require(:default, Rails.env) if defined?(Bundler)
 $dryrun = true#(`hostname`.strip != 'hypnos')
 $creator = 'somnidea'
 
+$dir = File.absolute_path(File.dirname(__FILE__))
+PREVWORDS_FILE = "#{$dir}/../db/prevwords.dat"
+
+
 require 'twitter'
 require 'bitly'
 require 'words'
