@@ -10,37 +10,39 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110119124116) do
+ActiveRecord::Schema.define(:version => 20110129103932) do
 
-  create_table "messages", :force => true do |t|
-    t.integer  "message_id"
-    t.integer  "original_id"
-    t.string   "text"
-    t.string   "sender_screen_name"
-    t.string   "recipient_screen_name"
-    t.datetime "posted_at"
-    t.boolean  "processed"
+  create_table "messages", :primary_key => "message_id", :force => true do |t|
+    t.integer  "original_id",           :limit => 8,                    :null => false
+    t.string   "text",                                                  :null => false
+    t.string   "sender_screen_name",                                    :null => false
+    t.string   "recipient_screen_name",                                 :null => false
+    t.datetime "posted_at",                                             :null => false
+    t.boolean  "processed",                          :default => false, :null => false
   end
 
-  create_table "puzzles", :force => true do |t|
-    t.integer "puzzle_id"
+  add_index "messages", ["original_id"], :name => "original_id", :unique => true
+
+  create_table "puzzles", :primary_key => "puzzle_id", :force => true do |t|
     t.integer "tweet_id"
-    t.string  "text"
+    t.string  "text",               :null => false
     t.string  "solution"
-    t.string  "puzzle_type"
+    t.string  "puzzle_type",        :null => false
     t.string  "author_screen_name"
+    t.integer "number"
   end
 
-  create_table "tweets", :force => true do |t|
-    t.integer  "tweet_id"
-    t.integer  "original_id"
-    t.string   "user_screen_name"
-    t.string   "text"
+  create_table "tweets", :primary_key => "tweet_id", :force => true do |t|
+    t.integer  "original_id",             :limit => 8,                    :null => false
+    t.string   "user_screen_name",                                        :null => false
+    t.string   "text",                                                    :null => false
     t.string   "in_reply_to_screen_name"
-    t.integer  "in_reply_to_status_id"
-    t.string   "source"
-    t.datetime "posted_at"
-    t.boolean  "processed"
+    t.integer  "in_reply_to_status_id",   :limit => 8
+    t.string   "source",                                                  :null => false
+    t.datetime "posted_at",                                               :null => false
+    t.boolean  "processed",                            :default => false, :null => false
   end
+
+  add_index "tweets", ["original_id"], :name => "original_id", :unique => true
 
 end

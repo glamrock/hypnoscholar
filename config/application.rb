@@ -6,7 +6,7 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
-$dryrun = true#(`hostname`.strip != 'hypnos')
+$dryrun = (`hostname`.strip != 'hypnos')
 $creator = 'somnidea'
 
 $dir = File.absolute_path(File.dirname(__FILE__))
@@ -245,7 +245,7 @@ module Hypnoscholar
                 return incorrect.sample unless puzzle.answered_by?(content)
 
                 if puzzle.correct_solutions.length == 1 # First correct answer!
-                    update "First correct answer for Puzzle #{puzzle.id} goes to: @#{sender_name}!"
+                    update "First correct answer for Puzzle #{puzzle.number} goes to: @#{sender_name}!"
                     return false
                 else
                     return correct.sample
@@ -268,7 +268,7 @@ module Hypnoscholar
 
                 puzzle.save
 
-                return "Acknowledged! Your contribution will be listed as Puzzle #{puzzle.id} ^_^"
+                return "Acknowledged! Your contribution will be listed as Puzzle #{puzzle.number} ^_^"
 
             elsif match = content.match(/http:\/\/[^ ]+/)
                 # Interesting link?
@@ -537,8 +537,8 @@ module Hypnoscholar
             puzzle = generate_puzzle if puzzle.nil?
 
             unless puzzle.nil?
-                puzzle.save
-                puzzline = "Puzzle #{puzzle.id}"
+				puzzle.number = last_tweeted_puzzle.number+1
+                puzzline = "Puzzle #{puzzle.number}"
 
                 if puzzle.author_screen_name
                     puzzline += " (by @#{puzzle.author_screen_name})"
@@ -553,7 +553,7 @@ module Hypnoscholar
                 tweet = update(tweet_text)
                 if tweet.is_a? Tweet
                     puzzle.tweet = tweet
-                    puzzle.save
+                    puzzle.save unless $dryrun
                 end
             end
         end
