@@ -31,16 +31,13 @@ GEM
     addressable (2.2.2)
     arel (1.0.1)
       activesupport (~> 3.0.0)
-    awesome_print (0.3.1)
     bitly (0.6.0)
       crack (>= 0.1.4)
       httparty (>= 0.5.2)
       oauth2
     builder (2.1.2)
     crack (0.1.8)
-    curl (0.0.8)
-      awesome_print (>= 0.2.1)
-      unidecoder (>= 1.1.1)
+    curb (0.7.9)
     erubis (2.6.6)
       abstract (>= 1.0.0)
     faraday (0.5.3)
@@ -98,7 +95,6 @@ GEM
       multi_xml (~> 0.2.0)
       simple_oauth (~> 0.1.2)
     tzinfo (0.3.23)
-    unidecoder (1.1.1)
     words (0.4.4)
 
 PLATFORMS
@@ -106,7 +102,7 @@ PLATFORMS
 
 DEPENDENCIES
   bitly
-  curl
+  curb
   mysql2
   nokogiri
   rails (= 3.0.0)

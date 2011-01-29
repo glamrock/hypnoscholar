@@ -1,7 +1,7 @@
 #!/home/somnidea/.rvm/bin/gempath_ruby
 
 $dir = File.absolute_path(File.dirname(__FILE__))
-require "#{$dir}/../lib/hypnoscholar"
+require "#{$dir}/../config/environment"
 
 
 if __FILE__ == $0

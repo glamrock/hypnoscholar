@@ -6,8 +6,14 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(:default, Rails.env) if defined?(Bundler)
 
-$dryrun = (`hostname`.strip != 'hypnos')
+$dryrun = true#(`hostname`.strip != 'hypnos')
 $creator = 'somnidea'
+
+require 'twitter'
+require 'bitly'
+require 'words'
+require 'open-uri'
+require 'curl'
 
 module Dict
     class << self
@@ -57,6 +63,16 @@ module LinkShortener
             end
 
             @bitly.send(sym, *args, &block)
+        end
+    end
+end
+
+module Log
+    class << self
+        def method_missing(sym, *args, &block)
+            str = args.join(', ')
+            puts "#{sym}: #{str}"
+			Rails.logger.send(sym, str)
         end
     end
 end
@@ -127,7 +143,11 @@ module Hypnoscholar
 
         # Generate tweet with a short title and a bitly link.
         def make_link_tweet(title, longlink, via=nil)
-            link = LinkShortener.shorten(longlink).short_url
+			if longlink.match(/http:\/\/bit\.ly/)
+				link = longlink
+			else 
+				link = LinkShortener.shorten(longlink).short_url
+			end
             viastr = " (via @#{via})"
 
             title_constraint = 140-link.length-1
@@ -286,7 +306,7 @@ module Hypnoscholar
             begin
                 resp = construct_response(content, sender_name, query, origin)
             rescue Exception => e
-                logger.error "Error responding to query `#{content}`: #{e.message}\n  #{e.backtrace[0]}"
+                Log.error "Error responding to query `#{content}`: #{e.message}\n  #{e.backtrace[0]}"
                 #resp = "Sorry, I encountered an error while thinking about how to reply! :("
                 resp = nil
             end
@@ -390,7 +410,7 @@ module Hypnoscholar
             unless response == false
                 target = message.sender_screen_name
                 TwitterAPI.direct_message_create(target, response) unless $dryrun
-                logger.info "To @#{target}: #{response}"
+                Log.info "To @#{target}: #{response}"
             end
 
             unless $dryrun
@@ -403,7 +423,7 @@ module Hypnoscholar
         def send_reply_to_tweet(tweet, response)
             unless response == false
                 TwitterAPI.update(response, :in_reply_to_status_id => tweet.original_id) unless $dryrun
-                logger.info response
+                Log.info response
             end
 
             unless $dryrun
@@ -414,7 +434,7 @@ module Hypnoscholar
 
         # Update with given content.
         def update(content)
-            logger.info content
+            Log.info content
             unless $dryrun
                 save_tweet(TwitterAPI.update(content))
             end
