@@ -56,7 +56,9 @@ class Puzzle < ActiveRecord::Base
         def binarygram(source)
           source = one_string(source).downcase
 
-          source.chars.map { |ch| (ch.ord-'a'.ord).to_s(2) }.join
+          binarygram = source.chars.map { |ch| (ch.ord-'a'.ord).to_s(2) }.join
+
+          Puzzle.new(:text => binarygram, :solution => source, :puzzle_type => 'binarygram')
         end
 	end
 
