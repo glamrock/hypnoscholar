@@ -1,0 +1,9 @@
+#!/home/somnidea/.rvm/bin/gempath_ruby
+
+$dir = File.absolute_path(File.dirname(__FILE__))
+require "#{$dir}/../lib/hypnoscholar"
+
+
+if __FILE__ == $0
+	Hypnoscholar.tweet_puzzle
+end

@@ -1,0 +1,23 @@
+development:
+  adapter: mysql2
+  database: hypnoscholar_development
+  pool: 5
+  username: root
+  password:
+  socket: /var/run/mysqld/mysqld.sock
+
+test:
+  adapter: mysql2
+  database: hypnoscholar_test
+  pool: 5
+  username: root
+  password:
+  socket: /var/run/mysqld/mysqld.sock
+
+production:
+  adapter: mysql2
+  database: hypnoscholar_production
+  pool: 5
+  username: hypnoscholar
+  password: st4lkyp0war
+  socket: /var/run/mysqld/mysqld.sock

@@ -1,0 +1,325 @@
+  [1m[36mSQL (0.2ms)[0m  [1mSHOW TABLES[0m
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` ORDER BY tweets.tweet_id DESC LIMIT 1
+Mysql2::Error: Table 'hypnoscholar_development.tweets' doesn't exist: SELECT     `tweets`.* FROM       `tweets`  ORDER BY  tweets.tweet_id DESC LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (17.1ms)[0m  CREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB
+  [1m[36mSQL (0.4ms)[0m  [1mSHOW KEYS FROM `schema_migrations`[0m
+  [1m[35mSQL (39.1ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations` ON `schema_migrations` (`version`)
+  [1m[36mSQL (0.4ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+Migrating to HypnoscholarOld (20110119124116)
+  [1m[35mSQL (9.7ms)[0m  CREATE TABLE `tweets` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `original_id` int(11), `user_screen_name` varchar(255), `text` varchar(255), `in_reply_to_screen_name` varchar(255), `in_reply_to_status_id` int(11), `source` varchar(255), `posted_at` datetime, `processed` tinyint(1)) ENGINE=InnoDB
+  [1m[36mSQL (9.8ms)[0m  [1mCREATE TABLE `messages` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `original_id` int(11), `text` varchar(255), `sender_screen_name` varchar(255), `recipient_screen_name` varchar(255), `posted_at` datetime, `processed` tinyint(1)) ENGINE=InnoDB[0m
+  [1m[35mSQL (7.6ms)[0m  CREATE TABLE `puzzles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `tweet_id` int(11), `text` varchar(255), `solution` varchar(255), `puzzle_type` varchar(255), `author_screen_name` varchar(255)) ENGINE=InnoDB
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `schema_migrations`[0m
+  [1m[35mSQL (4.1ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20110119124116')
+  [1m[36mSQL (0.4ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.3ms)[0m  SELECT `schema_migrations`.`version` FROM `schema_migrations`
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.6ms)[0m  describe `messages`
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW KEYS FROM `messages`[0m
+  [1m[35mSQL (0.6ms)[0m  describe `puzzles`
+  [1m[36mSQL (0.4ms)[0m  [1mSHOW KEYS FROM `puzzles`[0m
+  [1m[35mSQL (0.6ms)[0m  describe `tweets`
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW KEYS FROM `tweets`[0m
+  [1m[36mTweet Load (0.5ms)[0m  [1mSELECT `tweets`.* FROM `tweets` ORDER BY tweets.tweet_id DESC LIMIT 1[0m
+Mysql2::Error: Unknown column 'tweets.tweet_id' in 'order clause': SELECT     `tweets`.* FROM       `tweets`  ORDER BY  tweets.tweet_id DESC LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.1ms)[0m  [1mSELECT `schema_migrations`.`version` FROM `schema_migrations`[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.2ms)[0m  [1mdescribe `messages`[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW KEYS FROM `messages`
+  [1m[36mSQL (0.2ms)[0m  [1mdescribe `puzzles`[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW KEYS FROM `puzzles`
+  [1m[36mSQL (0.3ms)[0m  [1mdescribe `tweets`[0m
+  [1m[35mSQL (0.1ms)[0m  SHOW KEYS FROM `tweets`
+  [1m[36mSQL (0.2ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (5.2ms)[0m  DROP TABLE `messages`
+  [1m[36mSQL (15.4ms)[0m  [1mCREATE TABLE `messages` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `message_id` int(11), `original_id` int(11), `text` varchar(255), `sender_screen_name` varchar(255), `recipient_screen_name` varchar(255), `posted_at` datetime, `processed` tinyint(1)) ENGINE=InnoDB[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (2.4ms)[0m  [1mDROP TABLE `puzzles`[0m
+  [1m[35mSQL (10.0ms)[0m  CREATE TABLE `puzzles` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `puzzle_id` int(11), `tweet_id` int(11), `text` varchar(255), `solution` varchar(255), `puzzle_type` varchar(255), `author_screen_name` varchar(255)) ENGINE=InnoDB
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mSQL (4.4ms)[0m  DROP TABLE `tweets`
+  [1m[36mSQL (12.7ms)[0m  [1mCREATE TABLE `tweets` (`id` int(11) DEFAULT NULL auto_increment PRIMARY KEY, `tweet_id` int(11), `original_id` int(11), `user_screen_name` varchar(255), `text` varchar(255), `in_reply_to_screen_name` varchar(255), `in_reply_to_status_id` int(11), `source` varchar(255), `posted_at` datetime, `processed` tinyint(1)) ENGINE=InnoDB[0m
+  [1m[35mSQL (0.3ms)[0m  SHOW TABLES
+  [1m[36mSQL (0.3ms)[0m  [1mSELECT version FROM `schema_migrations`[0m
+  [1m[35mTweet Load (0.6ms)[0m  SELECT `tweets`.* FROM `tweets` ORDER BY tweets.tweet_id DESC LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mTweet Load (0.1ms)[0m  SELECT `tweets`.* FROM `tweets` ORDER BY tweets.tweet_id DESC LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mMessage Load (0.2ms)[0m  SELECT `messages`.* FROM `messages` ORDER BY messages.message_id DESC LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mMessage Load (0.1ms)[0m  SELECT `messages`.* FROM `messages` ORDER BY messages.message_id DESC LIMIT 1
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2281601533) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.5ms)[0m  [1mdescribe `messages`[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2281601533, '2011-01-28 23:14:18', 0, 'hypnoscholar', 'gurifunu', 'Latest volume of Legal and Criminal Psychology is available free online. http://bit.ly/fP9mOL')
+  [1m[36mSQL (6.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2236234962) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2236234962, '2011-01-20 14:22:35', 0, 'hypnoscholar', 'gurifunu', 'Brain research making waves. We\'ve published an essay collection on what is happening in neuroscience http://ow.ly/3H2cb')
+  [1m[36mSQL (3.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.2ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2213510711) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2213510711, '2011-01-16 17:35:35', 0, 'hypnoscholar', 'somnidea', 'Q: 1010011011101110111001101111001110101100001100101110011101 A: TAKE MY WIFE PLEASE')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.2ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2174058317) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2174058317, '2011-01-11 01:44:49', 0, 'hypnoscholar', 'NaokiYuki', 'Q: 4589cb647d1a8deceee28fe2b9f2e7b47da0e569 A: 0.87.11')
+  [1m[36mSQL (1.8ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2173410598) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2173410598, '2011-01-10 23:11:16', 0, 'hypnoscholar', 'somnidea', 'Q: Which Pokémon displays a two-turn epidermal spiral pattern proceeding counterclockwise from the outside in? A: Igglybuff')
+  [1m[36mSQL (3.8ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2173391534) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2173391534, '2011-01-10 23:06:54', 0, 'hypnoscholar', 'somnidea', 'Q: Which Pokémon displays a two-turn epidermal spiral pattern proceeding counterclockwise from the outset? A: Igglybuff')
+  [1m[36mSQL (4.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2166247234) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2166247234, '2011-01-09 15:45:36', 0, 'hypnoscholar', 'somnidea', 'I SAID: Q: puzzlepuzzle A: luketriton')
+  [1m[36mSQL (4.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2166188045) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2166188045, '2011-01-09 15:30:34', 0, 'hypnoscholar', 'somnidea', 'Q: puzzlepuzzle A: luketriton')
+  [1m[36mSQL (4.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2162585660) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2162585660, '2011-01-08 21:50:40', 0, 'hypnoscholar', 'somnidea', 'You\'re so mean to me. :(')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2161450801) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2161450801, '2011-01-08 16:42:43', 0, 'hypnoscholar', 'somnidea', '$ uname -a')
+  [1m[36mSQL (1.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2150541580) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2150541580, '2011-01-06 16:13:47', 0, 'hypnoscholar', 'somnidea', '$ ping twitter.com')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.3ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2150397211) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2150397211, '2011-01-06 15:37:36', 0, 'hypnoscholar', 'somnidea', '$ uname -a')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.1ms)[0m  SELECT `tweets`.* FROM `tweets` ORDER BY tweets.tweet_id DESC LIMIT 1
+  [1m[36mTweet Load (0.4ms)[0m  [1mSELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 31218073503535105) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.8ms)[0m  [1mdescribe `tweets`[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'NaokiYuki', 31210148970106880, 31218073503535105, '2011-01-29 05:12:23', 0, 'web', '@NaokiYuki I think that\'s just the Twitter API\'s fault; @hypnoscholar tends to encounter similar problems.', 'somnidea')
+  [1m[36mSQL (4.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 30433227525062656) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 30432874649886720, 30433227525062656, '2011-01-27 01:13:41', 0, 'web', '@hypnoscholar Carlos! (rofl bots)', 'gurifunu')
+  [1m[36mSQL (4.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 30432584185942016) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 30432075173597184, 30432584185942016, '2011-01-27 01:11:08', 0, 'web', '@hypnoscholar Gasp! What about all those great times we had in Vienna with Jean-Luc?!', 'gurifunu')
+  [1m[36mSQL (4.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 30431972639637504) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 30429847532609536, 30431972639637504, '2011-01-27 01:08:42', 0, 'web', '@hypnoscholar Sexy!', 'gurifunu')
+  [1m[36mSQL (4.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 28412964579053568) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'VagabondAnne', 28342064139739136, 28412964579053568, '2011-01-21 11:25:53', 0, '<a href=\"http://www.tweetdeck.com\" rel=\"nofollow\">TweetDeck</a>', '@VagabondAnne *facepalm* No, no, @hypnoscholar is a twitterbot. All his tweets are automated by a program of mine.', 'somnidea')
+  [1m[36mSQL (4.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 28342064139739136) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'somnidea', 28232113769684993, 28342064139739136, '2011-01-21 06:44:09', 0, 'web', '@somnidea I think I\'m not smart enough to follow @hypnoscholar, so I won\'t. I\'m a twitterbot? I won\'t fret since I don\'t know what that is.', 'VagabondAnne')
+  [1m[36mSQL (4.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 28232113769684993) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'VagabondAnne', 27983398127542272, 28232113769684993, '2011-01-20 23:27:15', 0, '<a href=\"http://www.tweetdeck.com\" rel=\"nofollow\">TweetDeck</a>', '@VagabondAnne This is why I have @hypnoscholar, so I don\'t become a twitterbot myself :P', 'somnidea')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 27672919643525121) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 27621304454610944, 27672919643525121, '2011-01-19 10:25:12', 0, 'web', '@hypnoscholar always do right! this will gratify some people and astonish the rest!', 'gurifunu')
+  [1m[36mSQL (1.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 27260080218963968) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 27258913149689856, 27260080218963968, '2011-01-18 07:04:44', 0, 'web', '@hypnoscholar hilarious!', 'profoundlypaige')
+  [1m[36mSQL (4.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 27103861030264832) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, NULL, NULL, 27103861030264832, '2011-01-17 20:43:58', 0, 'web', 'Have fun with this: Mfq8Veuw6kZnfBnNoaAskcxmEQoDtgQC2KYQ40BhabTLmkWg7gqFdSrv @hypnoscholar', 'HelixN')
+  [1m[36mSQL (3.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26932528594034688) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26896525984534528, 26932528594034688, '2011-01-17 09:23:09', 0, 'web', '@hypnoscholar \"TAKE MY WIFE PLEASE\"', 'HelixN')
+  [1m[36mSQL (4.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26898254717263873) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26898036907057152, 26898254717263873, '2011-01-17 07:06:58', 0, '<a href=\"http://itunes.apple.com/us/app/twitter/id409789998?mt=12\" rel=\"nofollow\">Twitter for Mac</a>', '@hypnoscholar looks like you only say \"try again\" or the question. Is it possible to ask out a Twitter bot? Your avatar looks nice.', 'ma_ttie')
+  [1m[36mSQL (4.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26897312336842752) LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26896525984534528, 26897312336842752, '2011-01-17 07:03:13', 0, '<a href=\"http://itunes.apple.com/us/app/twitter/id409789998?mt=12\" rel=\"nofollow\">Twitter for Mac</a>', '@hypnoscholar that\'s an interesting one, as it\'s not divisible by 8', 'ma_ttie')
+  [1m[36mSQL (4.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26537323785101313) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26534135635902464, 26537323785101313, '2011-01-16 07:12:45', 0, 'web', '@hypnoscholar cryptogram', 'gurifunu')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26191851434287104) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26081175441244160, 26191851434287104, '2011-01-15 08:19:58', 0, 'web', '@hypnoscholar ooh that\'s interesting, i\'m tempted to pay the $31.50!', 'NanoNay')
+  [1m[36mSQL (4.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.5ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 25320929189961729) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'somnidea', 25132190752841728, 25320929189961729, '2011-01-12 22:39:14', 0, '<a href=\"http://www.echofon.com/\" rel=\"nofollow\">Echofon</a>', '@somnidea i didn\'t even really read the question :P i am too lazy to look up @hypnoscholar', 'Jedi_Amara')
+  [1m[36mSQL (4.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 24759883974840320) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 24722196391792640, 24759883974840320, '2011-01-11 09:29:51', 0, '<a href=\"http://www.echofon.com/\" rel=\"nofollow\">Echofon</a>', '@hypnoscholar Ditto', 'mystic_azimuth')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 24650021836165120) LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.1ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'gurifunu', 24644310297223168, 24650021836165120, '2011-01-11 02:13:17', 0, '<a href=\"https://chrome.google.com/extensions/detail/encaiiljifbdbjlphpgpiimidegddhic\" rel=\"nofollow\">Chromed Bird</a>', '@gurifunu DM it to @hypnoscholar in a Q: A: format and he\'ll post it in a couple of days with credit :)', 'somnidea')
+  [1m[36mSQL (3.7ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.2ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 24644532947656704) LIMIT 1
+  [1m[36mSQL (0.0ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', NULL, 24644532947656704, '2011-01-11 01:51:29', 0, 'web', '@hypnoscholar you will gain money by an illegal action!', 'gurifunu')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.6ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`recipient_screen_name` = 'hypnoscholar') AND (`messages`.`processed` = 0)
+  [1m[36mTweet Load (0.6ms)[0m  [1mSELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`in_reply_to_screen_name` = 'hypnoscholar') AND (`tweets`.`processed` = 0)[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 2147483647) LIMIT 1
+  [1m[36mSQL (0.3ms)[0m  [1mSHOW TABLES[0m
+  [1m[35mMessage Load (0.4ms)[0m  SELECT `messages`.* FROM `messages` ORDER BY messages.message_id DESC LIMIT 1
+  [1m[36mMessage Load (0.1ms)[0m  [1mSELECT `messages`.* FROM `messages` ORDER BY messages.message_id DESC LIMIT 1[0m
+  [1m[35mMessage Load (0.2ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2281601533) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.5ms)[0m  describe `messages`
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2281601533, '2011-01-28 23:14:18', 0, 'hypnoscholar', 'gurifunu', 'Latest volume of Legal and Criminal Psychology is available free online. http://bit.ly/fP9mOL')[0m
+  [1m[35mSQL (4.9ms)[0m  COMMIT
+  [1m[36mMessage Load (0.2ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2236234962) LIMIT 1[0m
+  [1m[35mSQL (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2236234962, '2011-01-20 14:22:35', 0, 'hypnoscholar', 'gurifunu', 'Brain research making waves. We\'ve published an essay collection on what is happening in neuroscience http://ow.ly/3H2cb')[0m
+  [1m[35mSQL (4.4ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2213510711) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2213510711, '2011-01-16 17:35:35', 0, 'hypnoscholar', 'somnidea', 'Q: 1010011011101110111001101111001110101100001100101110011101 A: TAKE MY WIFE PLEASE')[0m
+  [1m[35mSQL (4.4ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2174058317) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2174058317, '2011-01-11 01:44:49', 0, 'hypnoscholar', 'NaokiYuki', 'Q: 4589cb647d1a8deceee28fe2b9f2e7b47da0e569 A: 0.87.11')[0m
+  [1m[35mSQL (4.3ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2173410598) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2173410598, '2011-01-10 23:11:16', 0, 'hypnoscholar', 'somnidea', 'Q: Which Pokémon displays a two-turn epidermal spiral pattern proceeding counterclockwise from the outside in? A: Igglybuff')[0m
+  [1m[35mSQL (4.1ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2173391534) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2173391534, '2011-01-10 23:06:54', 0, 'hypnoscholar', 'somnidea', 'Q: Which Pokémon displays a two-turn epidermal spiral pattern proceeding counterclockwise from the outset? A: Igglybuff')[0m
+  [1m[35mSQL (4.0ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2166247234) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2166247234, '2011-01-09 15:45:36', 0, 'hypnoscholar', 'somnidea', 'I SAID: Q: puzzlepuzzle A: luketriton')[0m
+  [1m[35mSQL (4.0ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2166188045) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2166188045, '2011-01-09 15:30:34', 0, 'hypnoscholar', 'somnidea', 'Q: puzzlepuzzle A: luketriton')[0m
+  [1m[35mSQL (2.0ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2162585660) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2162585660, '2011-01-08 21:50:40', 0, 'hypnoscholar', 'somnidea', 'You\'re so mean to me. :(')[0m
+  [1m[35mSQL (4.7ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2161450801) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2161450801, '2011-01-08 16:42:43', 0, 'hypnoscholar', 'somnidea', '$ uname -a')[0m
+  [1m[35mSQL (4.1ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2150541580) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.2ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2150541580, '2011-01-06 16:13:47', 0, 'hypnoscholar', 'somnidea', '$ ping twitter.com')[0m
+  [1m[35mSQL (4.2ms)[0m  COMMIT
+  [1m[36mMessage Load (0.3ms)[0m  [1mSELECT `messages`.* FROM `messages` WHERE (`messages`.`original_id` = 2150397211) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `messages` (`id`, `original_id`, `posted_at`, `processed`, `recipient_screen_name`, `sender_screen_name`, `text`) VALUES (NULL, 2150397211, '2011-01-06 15:37:36', 0, 'hypnoscholar', 'somnidea', '$ uname -a')[0m
+  [1m[35mSQL (6.4ms)[0m  COMMIT
+  [1m[36mTweet Load (0.3ms)[0m  [1mSELECT `tweets`.* FROM `tweets` ORDER BY tweets.tweet_id DESC LIMIT 1[0m
+  [1m[35mTweet Load (0.1ms)[0m  SELECT `tweets`.* FROM `tweets` ORDER BY tweets.tweet_id DESC LIMIT 1
+  [1m[36mTweet Load (0.3ms)[0m  [1mSELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 31218073503535105) LIMIT 1[0m
+  [1m[35mSQL (0.1ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mdescribe `tweets`[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'NaokiYuki', 31210148970106880, 31218073503535105, '2011-01-29 05:12:23', 0, 'web', '@NaokiYuki I think that\'s just the Twitter API\'s fault; @hypnoscholar tends to encounter similar problems.', 'somnidea')
+  [1m[36mSQL (6.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 30433227525062656) LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 30432874649886720, 30433227525062656, '2011-01-27 01:13:41', 0, 'web', '@hypnoscholar Carlos! (rofl bots)', 'gurifunu')
+  [1m[36mSQL (4.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 30432584185942016) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 30432075173597184, 30432584185942016, '2011-01-27 01:11:08', 0, 'web', '@hypnoscholar Gasp! What about all those great times we had in Vienna with Jean-Luc?!', 'gurifunu')
+  [1m[36mSQL (4.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 30431972639637504) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 30429847532609536, 30431972639637504, '2011-01-27 01:08:42', 0, 'web', '@hypnoscholar Sexy!', 'gurifunu')
+  [1m[36mSQL (4.4ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 28412964579053568) LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'VagabondAnne', 28342064139739136, 28412964579053568, '2011-01-21 11:25:53', 0, '<a href=\"http://www.tweetdeck.com\" rel=\"nofollow\">TweetDeck</a>', '@VagabondAnne *facepalm* No, no, @hypnoscholar is a twitterbot. All his tweets are automated by a program of mine.', 'somnidea')
+  [1m[36mSQL (4.5ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.6ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 28342064139739136) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'somnidea', 28232113769684993, 28342064139739136, '2011-01-21 06:44:09', 0, 'web', '@somnidea I think I\'m not smart enough to follow @hypnoscholar, so I won\'t. I\'m a twitterbot? I won\'t fret since I don\'t know what that is.', 'VagabondAnne')
+  [1m[36mSQL (3.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 28232113769684993) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'VagabondAnne', 27983398127542272, 28232113769684993, '2011-01-20 23:27:15', 0, '<a href=\"http://www.tweetdeck.com\" rel=\"nofollow\">TweetDeck</a>', '@VagabondAnne This is why I have @hypnoscholar, so I don\'t become a twitterbot myself :P', 'somnidea')
+  [1m[36mSQL (4.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 27672919643525121) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 27621304454610944, 27672919643525121, '2011-01-19 10:25:12', 0, 'web', '@hypnoscholar always do right! this will gratify some people and astonish the rest!', 'gurifunu')
+  [1m[36mSQL (3.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 27260080218963968) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 27258913149689856, 27260080218963968, '2011-01-18 07:04:44', 0, 'web', '@hypnoscholar hilarious!', 'profoundlypaige')
+  [1m[36mSQL (4.2ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 27103861030264832) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, NULL, NULL, 27103861030264832, '2011-01-17 20:43:58', 0, 'web', 'Have fun with this: Mfq8Veuw6kZnfBnNoaAskcxmEQoDtgQC2KYQ40BhabTLmkWg7gqFdSrv @hypnoscholar', 'HelixN')
+  [1m[36mSQL (4.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26932528594034688) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26896525984534528, 26932528594034688, '2011-01-17 09:23:09', 0, 'web', '@hypnoscholar \"TAKE MY WIFE PLEASE\"', 'HelixN')
+  [1m[36mSQL (1.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26898254717263873) LIMIT 1
+  [1m[36mSQL (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26898036907057152, 26898254717263873, '2011-01-17 07:06:58', 0, '<a href=\"http://itunes.apple.com/us/app/twitter/id409789998?mt=12\" rel=\"nofollow\">Twitter for Mac</a>', '@hypnoscholar looks like you only say \"try again\" or the question. Is it possible to ask out a Twitter bot? Your avatar looks nice.', 'ma_ttie')
+  [1m[36mSQL (4.6ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.4ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26897312336842752) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26896525984534528, 26897312336842752, '2011-01-17 07:03:13', 0, '<a href=\"http://itunes.apple.com/us/app/twitter/id409789998?mt=12\" rel=\"nofollow\">Twitter for Mac</a>', '@hypnoscholar that\'s an interesting one, as it\'s not divisible by 8', 'ma_ttie')
+  [1m[36mSQL (4.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26537323785101313) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26534135635902464, 26537323785101313, '2011-01-16 07:12:45', 0, 'web', '@hypnoscholar cryptogram', 'gurifunu')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 26191851434287104) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 26081175441244160, 26191851434287104, '2011-01-15 08:19:58', 0, 'web', '@hypnoscholar ooh that\'s interesting, i\'m tempted to pay the $31.50!', 'NanoNay')
+  [1m[36mSQL (3.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 25320929189961729) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'somnidea', 25132190752841728, 25320929189961729, '2011-01-12 22:39:14', 0, '<a href=\"http://www.echofon.com/\" rel=\"nofollow\">Echofon</a>', '@somnidea i didn\'t even really read the question :P i am too lazy to look up @hypnoscholar', 'Jedi_Amara')
+  [1m[36mSQL (4.3ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 24759883974840320) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 24722196391792640, 24759883974840320, '2011-01-11 09:29:51', 0, '<a href=\"http://www.echofon.com/\" rel=\"nofollow\">Echofon</a>', '@hypnoscholar Ditto', 'mystic_azimuth')
+  [1m[36mSQL (3.9ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 24650021836165120) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'gurifunu', 24644310297223168, 24650021836165120, '2011-01-11 02:13:17', 0, '<a href=\"https://chrome.google.com/extensions/detail/encaiiljifbdbjlphpgpiimidegddhic\" rel=\"nofollow\">Chromed Bird</a>', '@gurifunu DM it to @hypnoscholar in a Q: A: format and he\'ll post it in a couple of days with credit :)', 'somnidea')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 24644532947656704) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.2ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', NULL, 24644532947656704, '2011-01-11 01:51:29', 0, 'web', '@hypnoscholar you will gain money by an illegal action!', 'gurifunu')
+  [1m[36mSQL (4.0ms)[0m  [1mCOMMIT[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 24641700706123776) LIMIT 1
+  [1m[36mSQL (0.1ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `tweets` (`id`, `in_reply_to_screen_name`, `in_reply_to_status_id`, `original_id`, `posted_at`, `processed`, `source`, `text`, `user_screen_name`) VALUES (NULL, 'hypnoscholar', 24163789570052096, 24641700706123776, '2011-01-11 01:40:13', 0, 'web', '@hypnoscholar you will gain money by an illegal action', 'gurifunu')
+  [1m[36mSQL (4.1ms)[0m  [1mCOMMIT[0m
+  [1m[35mMessage Load (0.5ms)[0m  SELECT `messages`.* FROM `messages` WHERE (`messages`.`recipient_screen_name` = 'hypnoscholar') AND (`messages`.`processed` = 0)
+  [1m[36mTweet Load (0.6ms)[0m  [1mSELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`in_reply_to_screen_name` = 'hypnoscholar') AND (`tweets`.`processed` = 0)[0m
+  [1m[35mTweet Load (0.3ms)[0m  SELECT `tweets`.* FROM `tweets` WHERE (`tweets`.`original_id` = 2147483647) LIMIT 1
+  [1m[36mPuzzle Load (0.5ms)[0m  [1mSELECT `puzzles`.* FROM `puzzles` WHERE (`puzzles`.tweet_id = NULL) LIMIT 1[0m

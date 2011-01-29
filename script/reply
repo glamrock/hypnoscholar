@@ -1,0 +1,13 @@
+#!/home/somnidea/.rvm/bin/gempath_ruby
+
+$dir = File.absolute_path(File.dirname(__FILE__))
+require "#{$dir}/../config/environment"
+
+
+if __FILE__ == $0
+	hypno = Hypnoscholar
+	hypno.retrieve_messages
+	hypno.retrieve_mentions
+	hypno.process_messages
+	hypno.process_mentions
+end
